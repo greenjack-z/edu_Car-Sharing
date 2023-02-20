@@ -7,18 +7,15 @@ import java.sql.Statement;
 
 public class DbService {
     private final String dbUrl;
-    private final String user;
-    private final String password;
 
     private Connection connection;
-    DbService (String dbUrl, String user, String password) {
-        this.dbUrl = dbUrl;
-        this.user = user;
-        this.password = password;
+    DbService (String fileName) {
+        this.dbUrl = "jdbc:h2:./src/carsharing/db/" + fileName;
     }
     public void connect() {
+        System.out.println(dbUrl);
         try {
-            connection = DriverManager.getConnection(dbUrl, user, password);
+            connection = DriverManager.getConnection(dbUrl);
             connection.setAutoCommit(true);
         } catch (SQLException e) {
             System.err.println("JDBC error");

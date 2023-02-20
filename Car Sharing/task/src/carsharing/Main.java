@@ -12,13 +12,11 @@ public class Main {
                 return args[i + 1];
             }
         }
-        return "defaultDB.db";
+        return "defaultDB";
     }
 
     private void run(String filename) {
-        final String userName = "user";
-        final String password = "";
-        DbService dbService = new DbService(filename, userName, password);
+        DbService dbService = new DbService(filename);
         dbService.connect();
         dbService.createTable();
         dbService.close();
