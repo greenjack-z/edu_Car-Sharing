@@ -1,5 +1,6 @@
 package carsharing.app;
 
+import carsharing.entity.Car;
 import carsharing.entity.Company;
 
 import java.io.BufferedReader;
@@ -11,7 +12,6 @@ import java.util.Deque;
 import java.util.List;
 
 public class Menu {
-    //private Page currentPage;
     private final Deque<Page> pages = new ArrayDeque<>();
     private boolean exit = false;
     private final App app;
@@ -23,24 +23,19 @@ public class Menu {
 
     public void run() {
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        pages.push(welcomePage);
-        try {
-            while (!exit) {
-                printPage();
-                int input = Integer.parseInt(bufferedReader.readLine());
-                pages.getFirst().items.get(input).choose();
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter the number!");
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Please choose the item from list");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        pages.push(new Page(List.of(itemExit, itemLogin)));
+        while (!exit) {
+            printPage();
             try {
-                bufferedReader.close();
+                int input = Integer.parseInt(bufferedReader.readLine());
+                System.out.println();
+                pages.getFirst().items.get(input).choose();
+            } catch (NumberFormatException e) {
+                System.out.println("please enter number");
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("please choose item from list");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Input read error: " + e.getMessage());
             }
         }
     }
@@ -56,7 +51,7 @@ public class Menu {
         System.out.printf("0. %s%n", page.items.get(0));
     }
 
-    abstract class Item {
+    abstract static class Item {
         final String title;
 
         Item(String title) {
@@ -85,7 +80,7 @@ public class Menu {
     Item itemLogin = new Item("Log in as a manager") {
         @Override
         void choose() {
-            pages.addFirst(managerPage);
+            pages.addFirst(new Page(List.of(itemBack, itemListCompanies, itemCreateCompany)));
         }
     };
     Item itemListCompanies = new Item("Company list") {
@@ -102,13 +97,15 @@ public class Menu {
                 items.add(new Item(company.name()) {
                     @Override
                     void choose() {
-                        companyPage.title = company.name() + " company:";
                         pages.removeFirst();
-                        pages.addFirst(companyPage);
+                        CompanyPage page = new CompanyPage(company, List.of(itemBack, itemListCars, itemCreateCar));
+                        pages.addFirst(page);
                     }
                 });
             }
-            pages.addFirst(new Page(items));
+            Page page = new Page(items);
+            page.setTitle("Choose a company:");
+            pages.addFirst(page);
         }
     };
     Item itemCreateCompany = new Item("Create a company") {
@@ -125,38 +122,55 @@ public class Menu {
     Item itemListCars = new Item("Car list") {
         @Override
         void choose() {
-            pages.addFirst(new Page(List.of(testItem, testItem)));
+            CompanyPage page = (CompanyPage) pages.getFirst();
+            List<Car> cars = app.getCars(page.company);
+            if (cars.isEmpty()) {
+                System.out.println("The car list is empty!");
+                return;
+            }
+            System.out.printf("%s cars:%n", page.company.name());
+            for (Car car : cars) {
+                System.out.printf("%d. %s%n", cars.indexOf(car) + 1, car.name());
+            }
+            System.out.println();
         }
     };
     Item itemCreateCar = new Item("Create a car") {
         @Override
         void choose() {
-            System.out.println("%nEnter the car name:%n");
+            System.out.println("Enter the car name:");
+            CompanyPage page = (CompanyPage) pages.getFirst();
             try {
-                app.createCar(bufferedReader.readLine(), new Company(0, "null"));//todo
+                app.createCar(bufferedReader.readLine(), page.company);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     };
 
-    Item testItem = new Item("default test item") {
-        @Override
-        void choose() {
-            System.out.println("test item choosen");
-        }
-    };
-
-
-    class Page {
+    static class Page {
         private final List<Item> items;
         private String title = null;
 
         Page(List<Item> items) {
             this.items = items;
         }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
     }
-    Page welcomePage = new Page(List.of(itemExit, itemLogin));
-    Page managerPage = new Page(List.of(itemBack, itemListCompanies, itemCreateCompany));
-    Page companyPage = new Page(List.of(itemBack, itemListCars, itemCreateCar));
+
+    static class CompanyPage extends Page {
+        private final Company company;
+        CompanyPage(Company company, List<Item> items) {
+            super(items);
+            this.setTitle(company.name() + " company:");
+            this.company = company;
+        }
+
+        public Company getCompany() {
+            return company;
+        }
+    }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface CarDao {
     Car loadCar(int id);
     List<Car> loadCars(Company company);
-    void createCar(Company company, String carName);
+    boolean createCar(Company company, String carName);
 }

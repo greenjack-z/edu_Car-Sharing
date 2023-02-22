@@ -8,8 +8,6 @@ import carsharing.interfaces.CompanyDao;
 import carsharing.interfaces.CompanyDaoH2;
 import carsharing.utils.DbUtil;
 
-import java.util.Collections;
-
 import java.util.List;
 
 public class App {
@@ -43,12 +41,7 @@ public class App {
     }
 
     public List<Car> getCars(Company company) {
-        List<Car> list = carDao.loadCars(company);
-        if (list.isEmpty()) {
-            System.out.println("The car list is empty!");
-            return Collections.emptyList();
-        }
-        return list;
+        return carDao.loadCars(company);
     }
 
     public void createCompany(String name) {
@@ -58,6 +51,8 @@ public class App {
     }
 
     public void createCar(String name, Company company) {
-        carDao.createCar(company, name);
+        if(carDao.createCar(company, name)) {
+            System.out.println("The car was created!");
+        }
     }
 }

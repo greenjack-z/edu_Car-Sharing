@@ -13,39 +13,29 @@ public class CompanyDaoH2 implements CompanyDao {
         this.dbUrl = "jdbc:h2:" + dbPath;
     }
 
-    public Connection connect() {
-        Connection connection = null;
+
+    static class ConnectionException extends RuntimeException {
+    }
+    private Connection connection() {
         try {
-            connection = DriverManager.getConnection(dbUrl);
+            Connection connection = DriverManager.getConnection(dbUrl);
             connection.setAutoCommit(true);
+            return connection;
         } catch (SQLException e) {
-            System.err.println("JDBC error");
-            e.printStackTrace();
-        }
-        return connection;
-    }
-    public void close(Connection connection) {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            System.err.println("DB connection close error");
-            e.printStackTrace();
+            throw new ConnectionException();
         }
     }
-
-
+    @Override
     public Company loadCompany(int id) {
         Company company = null;
         String sql = "SELECT id, name FROM company WHERE id = ?";
-        Connection connection = connect();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             company = new Company(resultSet.getInt("id"), resultSet.getString("name"));
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            close(connection);
         }
         return company;
     }
@@ -53,16 +43,14 @@ public class CompanyDaoH2 implements CompanyDao {
     public List<Company> loadCompanies() {
         List<Company> companies = new ArrayList<>();
         String sql = "SELECT id, name FROM company ORDER by id";
-        Connection connection = connect();
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = connection();
+             Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 companies.add(new Company(resultSet.getInt("id"), resultSet.getString("name")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            close(connection);
         }
         return companies;
     }
@@ -70,16 +58,14 @@ public class CompanyDaoH2 implements CompanyDao {
     @Override
     public boolean createCompany(String name) {
         String sql = "INSERT INTO company(name) VALUES (?)";
-        Connection connection = connect();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, name);
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            close(connection);
         }
     }
 }

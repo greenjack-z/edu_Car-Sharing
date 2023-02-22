@@ -3,15 +3,18 @@
 1. Log in as a manager
 	0. Exit
 > 0
+
 [1;31m
 Start test 2[0m
 1. Log in as a manager
 	0. Exit
 > 1
+
 1. Company list
 2. Create a company
 	0. Back
 > 0
+
 1. Log in as a manager
 	0. Exit
 [1;31m
@@ -25,43 +28,185 @@
 1. Log in as a manager
 	0. Exit
 > 1
+
 1. Company list
 2. Create a company
 	0. Back
 > 1
+
 The company list is empty!
 1. Company list
 2. Create a company
 	0. Back
 > 2
+
 Enter the company name:
 > Super company
+The company was created!
 1. Company list
 2. Create a company
 	0. Back
 > 1
+
+Choose a company:
 1. Super company
+	0. Back
+> 0
 
 1. Company list
 2. Create a company
 	0. Back
 > 2
+
 Enter the company name:
 > Another company
+The company was created!
 1. Company list
 2. Create a company
 	0. Back
 > 2
+
 Enter the company name:
 > One more company
+The company was created!
 1. Company list
 2. Create a company
 	0. Back
 > 1
-1. Another company
-2. One more company
-3. Super company
+
+Choose a company:
+1. Super company
+2. Another company
+3. One more company
+	0. Back
+> 2
+
+Another company company:
+1. Car list
+2. Create a car
+	0. Back
+[1;31m
+Start test 7[0m
+1. Log in as a manager
+	0. Exit
+> 1
 
 1. Company list
 2. Create a company
 	0. Back
+> 2
+
+Enter the company name:
+> Car To Go
+The company was created!
+1. Company list
+2. Create a company
+	0. Back
+> 2
+
+Enter the company name:
+> Drive Now
+The company was created!
+1. Company list
+2. Create a company
+	0. Back
+> 1
+
+Choose a company:
+1. Car To Go
+2. Drive Now
+	0. Back
+> 1
+
+Car To Go company:
+1. Car list
+2. Create a car
+	0. Back
+> 1
+
+The car list is empty!
+Car To Go company:
+1. Car list
+2. Create a car
+	0. Back
+> 2
+
+Enter the car name:
+> Hyundai Venue
+The car was created!
+Car To Go company:
+1. Car list
+2. Create a car
+	0. Back
+> 2
+
+Enter the car name:
+> Maruti Suzuki Dzire
+The car was created!
+Car To Go company:
+1. Car list
+2. Create a car
+	0. Back
+> 1
+
+Car To Go cars:
+1. Hyundai Venue
+2. Maruti Suzuki Dzire
+
+Car To Go company:
+1. Car list
+2. Create a car
+	0. Back
+> 0
+
+1. Company list
+2. Create a company
+	0. Back
+> 1
+
+Choose a company:
+1. Car To Go
+2. Drive Now
+	0. Back
+> 2
+
+Drive Now company:
+1. Car list
+2. Create a car
+	0. Back
+> 1
+
+The car list is empty!
+Drive Now company:
+1. Car list
+2. Create a car
+	0. Back
+> 2
+
+Enter the car name:
+> Lamborghini Urraco
+The car was created!
+Drive Now company:
+1. Car list
+2. Create a car
+	0. Back
+> 1
+
+Drive Now cars:
+1. Lamborghini Urraco
+
+Drive Now company:
+1. Car list
+2. Create a car
+	0. Back
+> 0
+
+1. Company list
+2. Create a company
+	0. Back
+> 0
+
+1. Log in as a manager
+	0. Exit
+> 0
+
