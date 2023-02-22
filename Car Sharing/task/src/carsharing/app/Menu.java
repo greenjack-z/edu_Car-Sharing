@@ -1,58 +1,65 @@
 package carsharing.app;
 
+import carsharing.entity.Company;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 
 public class Menu {
-    private page currentPage = page.WELCOME;
+    //private Page currentPage;
+    private final Deque<Page> pages = new ArrayDeque<>();
+    private boolean exit = false;
+    private final App app;
+    private BufferedReader bufferedReader;
 
-    public void run(App app) {
-        boolean exit = false;
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
+    Menu(App app) {
+        this.app = app;
+    }
+
+    public void run() {
+        bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        pages.push(welcomePage);
+        try {
             while (!exit) {
                 printPage();
                 int input = Integer.parseInt(bufferedReader.readLine());
-                if (input > currentPage.items.length) {
-                    System.out.println("Please choose the listed option!");
-                    continue;
-                }
-                switch (currentPage.items[input]) {
-                    case COMPANY_LIST -> app.listCompanies();
-                    case COMPANY_CREATE -> app.createCompany(promptName(bufferedReader));
-                    case LOGIN -> currentPage = page.MANAGE;
-                    case BACK -> currentPage = page.WELCOME;
-                    case EXIT -> exit = true;
-                }
+                pages.getFirst().items.get(input).choose();
             }
         } catch (NumberFormatException e) {
             System.out.println("Please enter the number!");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Please choose the item from list");
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void printPage() {
-        for (int i = 1; i < currentPage.items.length; i++) {
-            System.out.printf("%d. %s%n", i, currentPage.items[i]);
+        Page page = pages.getFirst();
+        if (page.title != null) {
+            System.out.println(page.title);
         }
-        System.out.printf("0. %s%n", currentPage.items[0]);
+        for (int i = 1; i < page.items.size(); i++) {
+            System.out.printf("%d. %s%n", i, page.items.get(i));
+        }
+        System.out.printf("0. %s%n", page.items.get(0));
     }
 
-    private String promptName(BufferedReader bufferedReader) throws IOException {
-        System.out.println("Enter the company name:");
-        return bufferedReader.readLine();
-    }
+    abstract class Item {
+        final String title;
 
-    enum item {
-        EXIT("Exit"),
-        BACK("Back"),
-        LOGIN("Log in as a manager"),
-        COMPANY_LIST("Company list"),
-        COMPANY_CREATE("Create a company");
-        private final String title;
-
-        item(String title) {
+        Item(String title) {
             this.title = title;
         }
 
@@ -60,15 +67,96 @@ public class Menu {
         public String toString() {
             return title;
         }
+
+        abstract void choose();
     }
+    Item itemExit = new Item("Exit") {
+        @Override
+        void choose() {
+            exit = true;
+        }
+    };
+    Item itemBack = new Item("Back") {
+        @Override
+        void choose() {
+            pages.removeFirst();
+        }
+    };
+    Item itemLogin = new Item("Log in as a manager") {
+        @Override
+        void choose() {
+            pages.addFirst(managerPage);
+        }
+    };
+    Item itemListCompanies = new Item("Company list") {
+        @Override
+        void choose() {
+            List<Company> companies = app.getCompanies();
+            if (companies.isEmpty()) {
+                System.out.println("The company list is empty!");
+                return;
+            }
+            List<Item> items = new ArrayList<>();
+            items.add(itemBack);
+            for (Company company : companies) {
+                items.add(new Item(company.name()) {
+                    @Override
+                    void choose() {
+                        companyPage.title = company.name() + " company:";
+                        pages.removeFirst();
+                        pages.addFirst(companyPage);
+                    }
+                });
+            }
+            pages.addFirst(new Page(items));
+        }
+    };
+    Item itemCreateCompany = new Item("Create a company") {
+        @Override
+        void choose() {
+            System.out.println("Enter the company name:");
+            try {
+                app.createCompany(bufferedReader.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    Item itemListCars = new Item("Car list") {
+        @Override
+        void choose() {
+            pages.addFirst(new Page(List.of(testItem, testItem)));
+        }
+    };
+    Item itemCreateCar = new Item("Create a car") {
+        @Override
+        void choose() {
+            System.out.println("%nEnter the car name:%n");
+            try {
+                app.createCar(bufferedReader.readLine(), new Company(0, "null"));//todo
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-    enum page {
-        WELCOME(new item[]{item.EXIT, item.LOGIN}),
-        MANAGE(new item[]{item.BACK, item.COMPANY_LIST, item.COMPANY_CREATE});
-        private final item[] items;
+    Item testItem = new Item("default test item") {
+        @Override
+        void choose() {
+            System.out.println("test item choosen");
+        }
+    };
 
-        page(item[] items) {
+
+    class Page {
+        private final List<Item> items;
+        private String title = null;
+
+        Page(List<Item> items) {
             this.items = items;
         }
     }
+    Page welcomePage = new Page(List.of(itemExit, itemLogin));
+    Page managerPage = new Page(List.of(itemBack, itemListCompanies, itemCreateCompany));
+    Page companyPage = new Page(List.of(itemBack, itemListCars, itemCreateCar));
 }

@@ -1,12 +1,10 @@
 [1;31m
 Start test 1[0m
-(jdbc:h2:./src/carsharing/db/carsharing
 1. Log in as a manager
 	0. Exit
 > 0
 [1;31m
 Start test 2[0m
-(jdbc:h2:./src/carsharing/db/carsharing
 1. Log in as a manager
 	0. Exit
 > 1
@@ -24,7 +22,6 @@
 Start test 5[0m
 [1;31m
 Start test 6[0m
-(jdbc:h2:./src/carsharing/db/carsharing
 1. Log in as a manager
 	0. Exit
 > 1
@@ -38,16 +35,32 @@
 	0. Back
 > 2
 Enter the company name:
-1. Company list
-2. Create a company
-	0. Back
 > Super company
-Please enter the number!
 1. Company list
 2. Create a company
 	0. Back
 > 1
-1. 
+1. Super company
+
+1. Company list
+2. Create a company
+	0. Back
+> 2
+Enter the company name:
+> Another company
+1. Company list
+2. Create a company
+	0. Back
+> 2
+Enter the company name:
+> One more company
+1. Company list
+2. Create a company
+	0. Back
+> 1
+1. Another company
+2. One more company
+3. Super company
 
 1. Company list
 2. Create a company

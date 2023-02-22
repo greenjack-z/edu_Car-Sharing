@@ -65,7 +65,7 @@ INSERT INTO company VALUES (?) [21002-200]
 	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1235)
 	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:76)
 	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:352)
-	at carsharing.services.DbService.createCompany(CompanyDaoImplementation.java:72)
+	at carsharing.interfaces.CompanyDaoH2.createCompany(CompanyDaoImplementation.java:72)
 	at carsharing.Main.createCompany(Main.java:39)
 	at carsharing.app.Menu.run(Menu.java:43)
 	at carsharing.Main.run(Main.java:23)

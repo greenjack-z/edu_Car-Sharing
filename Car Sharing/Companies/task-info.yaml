@@ -442,15 +442,6 @@ files:
         }
     }
   learner_created: true
-- name: src/carsharing/app/Commands.java
-  visible: true
-  learner_created: true
-- name: src/carsharing/interfaces/Command.java
-  visible: true
-  learner_created: true
-- name: src/carsharing/interfaces/MenuItem.java
-  visible: true
-  learner_created: true
 - name: src/carsharing/interfaces/CompanyDao.java
   visible: true
   learner_created: true
@@ -458,17 +449,5 @@ files:
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11502#comment
-status: Failed
-feedback:
-  message: "Wrong answer in test #6\n\nIn the company list expected one company.\n\
-    Your output should contain &#39;1. Super company&#39;\n\nPlease find below the\
-    \ output of your program during this failed test.\nNote that the &#39;&gt;&#39;\
-    \ character indicates the beginning of the input line.\n\n---\n\nArguments: -databaseFileName\
-    \ carsharing\n\njdbc:h2:./src/carsharing/db/carsharing\n1. Log in as a manager\n\
-    0. Exit\n&gt; 1\n1. Company list\n2. Create a company\n0. Back\n&gt; 1\nThe company\
-    \ list is empty!\n1. Company list\n2. Create a company\n0. Back\n&gt; 2\nEnter\
-    \ the company name:\n1. Company list\n2. Create a company\n0. Back\n&gt; Super\
-    \ company\nPlease enter the number!\n1. Company list\n2. Create a company\n0.\
-    \ Back\n&gt; 1\n1. \n\n1. Company list\n2. Create a company\n0. Back"
-  time: "Mon, 20 Feb 2023 15:25:20 UTC"
-record: -1
+status: Solved
+record: 3
