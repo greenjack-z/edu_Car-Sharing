@@ -1,6 +1,7 @@
 package carsharing.interfaces;
 
 import carsharing.entity.Company;
+import carsharing.utils.ConnectionException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,16 +14,13 @@ public class CompanyDaoH2 implements CompanyDao {
         this.dbUrl = "jdbc:h2:" + dbPath;
     }
 
-
-    static class ConnectionException extends RuntimeException {
-    }
     private Connection connection() {
         try {
             Connection connection = DriverManager.getConnection(dbUrl);
             connection.setAutoCommit(true);
             return connection;
         } catch (SQLException e) {
-            throw new ConnectionException();
+            throw new ConnectionException(e);
         }
     }
     @Override
@@ -33,6 +31,7 @@ public class CompanyDaoH2 implements CompanyDao {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
             company = new Company(resultSet.getInt("id"), resultSet.getString("name"));
         } catch (SQLException e) {
             e.printStackTrace();

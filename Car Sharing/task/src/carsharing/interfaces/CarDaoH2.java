@@ -2,6 +2,7 @@ package carsharing.interfaces;
 
 import carsharing.entity.Car;
 import carsharing.entity.Company;
+import carsharing.utils.ConnectionException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,30 +15,25 @@ public class CarDaoH2 implements CarDao {
         this.dbUrl = "jdbc:h2:" + dbPath;
     }
 
-    static class ConnectionException extends RuntimeException {
-    }
     private Connection connection() {
         try {
             Connection connection = DriverManager.getConnection(dbUrl);
             connection.setAutoCommit(true);
             return connection;
         } catch (SQLException e) {
-            throw new ConnectionException();
+            throw new ConnectionException(e);
         }
     }
     @Override
     public Car loadCar(int id) {
         Car car = null;
-        String sql = """
-                    SELECT id, car.name, company.name
-                    FROM car JOIN company ON company_id = company.id
-                    WHERE id = ?
-                    """;
+        String sql = "SELECT id, name, company_id FROM car WHERE id = ?";
         try (Connection connection = connection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            car = new Car(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+            resultSet.next();
+            car = new Car(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getInt("company_id"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -53,7 +49,29 @@ public class CarDaoH2 implements CarDao {
             statement.setInt(1, company.id());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                cars.add(new Car(resultSet.getInt("id"), resultSet.getString("name"), company.name()));
+                cars.add(new Car(resultSet.getInt("id"), resultSet.getString("name"), company.id()));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cars;
+    }
+
+    @Override
+    public List<Car> loadFreeCars(Company company) {
+        List<Car> cars = new ArrayList<>();
+        String sql = """
+                SELECT car.id, car.name
+                FROM car LEFT JOIN customer ON car.id = customer.rented_car_id
+                WHERE rented_car_id IS NULL AND company_id = ?
+                ORDER by id
+                """;
+        try (Connection connection = connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, company.id());
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cars.add(new Car(resultSet.getInt("id"), resultSet.getString("name"), company.id()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
