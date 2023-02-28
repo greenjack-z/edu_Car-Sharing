@@ -1,8 +1,9 @@
 package carsharing;
 
-public class Main {
+import carsharing.app.App;
 
+public class Main {
     public static void main(String[] args) {
-        // write your code here
+        new App(args).run();
     }
 }

@@ -3,20 +3,20 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/440790/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: "Mon, 20 Feb 2023 11:34:43 UTC"
+update_date: "Mon, 27 Feb 2023 13:24:15 UTC"
 stages:
 - id: 758
   step: 11501
-  is_completed: false
+  is_completed: true
 - id: 759
   step: 11502
-  is_completed: false
+  is_completed: true
 - id: 760
   step: 11503
-  is_completed: false
+  is_completed: true
 - id: 761
   step: 11504
-  is_completed: false
+  is_completed: true
 topics:
   0:
   - title: "Write, compile, and run"
@@ -27,6 +27,10 @@ topics:
     theory_id: 6865
   - title: Introduction to Operating systems
     theory_id: 9704
+  - title: Command line overview
+    theory_id: 8977
+  - title: Parameters and Options
+    theory_id: 9746
   - title: Computer algorithms
     theory_id: 16547
   - title: Immutability
@@ -123,10 +127,6 @@ topics:
     theory_id: 3570
   - title: Exception handling
     theory_id: 3552
-  - title: Command line overview
-    theory_id: 8977
-  - title: Parameters and Options
-    theory_id: 9746
   - title: Running programs on your computer
     theory_id: 3746
   - title: Files
